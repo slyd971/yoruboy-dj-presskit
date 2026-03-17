@@ -1,40 +1,144 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  Instagram,
-  Mail,
-  Phone,
-  Music2,
-  Globe2,
-  MapPin,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
 const photos = [
-  "/press-kit/2025-12-29-22-31-08-761.jpg",
-  "/press-kit/20250719_192423.jpg",
-  "/press-kit/1000019881.jpg",
-  "/press-kit/DSC01685.JPG",
+  {
+    src: "/press-kit/2025-12-29-22-31-08-761.jpg",
+    alt: "Sly'D live performance",
+  },
+  {
+    src: "/press-kit/20250719_192423.jpg",
+    alt: "Studio portrait",
+  },
+  {
+    src: "/press-kit/1000019881.jpg",
+    alt: "Urban portrait",
+  },
+  {
+    src: "/press-kit/DSC01685.JPG",
+    alt: "Club performance",
+  },
 ];
 
-const france = [
-  "Wanderlust",
-  "Palais Maillot",
-  "Mix Club",
-  "Chez Régine",
-  "Grey Club",
-];
+export default function GalleryPage() {
+  const [active, setActive] = useState<number | null>(null);
 
-const international = [
-  "Singapore",
-  "Berlin",
-  "Miami",
-  "Manchester",
-];
+  const close = () => setActive(null);
+  const next = () =>
+    setActive((prev) => (prev! + 1) % photos.length);
+  const prev = () =>
+    setActive((prev) => (prev! - 1 + photos.length) % photos.length);
 
-const brands = ["Dior", "Foot Locker", "Airness", "Mouv' Radio"];
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (active === null) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [active]);
 
+  return (
+    <main className="min-h-screen bg-black text-white px-6 py-16">
+
+      <div className="max-w-7xl mx-auto">
+
+        {/* HEADER */}
+
+        <div className="flex items-center justify-between mb-16">
+
+          <div>
+            <h1 className="text-5xl md:text-6xl font-black">
+              Captured in Motion
+            </h1>
+
+            <p className="text-gray-400 mt-4 max-w-xl">
+              A visual journey through performances, atmosphere and identity.
+            </p>
+          </div>
+
+          <Link
+            href="/"
+            className="flex items-center gap-2 border px-5 py-3 rounded-full text-sm uppercase tracking-widest hover:bg-white hover:text-black transition"
+          >
+            <ArrowLeft size={18} />
+            Back
+          </Link>
+
+        </div>
+
+        {/* GRID */}
+
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          {photos.map((photo, index) => (
+            <div
+              key={photo.src}
+              onClick={() => setActive(index)}
+              className="cursor-pointer group overflow-hidden rounded-2xl border border-white/10"
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+              />
+
+              <div className="p-4 text-sm text-gray-400 uppercase tracking-widest border-t border-white/10">
+                {photo.alt}
+              </div>
+            </div>
+          ))}
+
+        </div>
+
+      </div>
+
+      {/* LIGHTBOX */}
+
+      {active !== null && (
+        <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50">
+
+          {/* CLOSE */}
+          <button
+            onClick={close}
+            className="absolute top-6 right-6 border p-3 rounded-full hover:bg-white hover:text-black"
+          >
+            <X />
+          </button>
+
+          {/* LEFT */}
+          <button
+            onClick={prev}
+            className="absolute left-6 top-1/2 -translate-y-1/2 border p-3 rounded-full hover:bg-white hover:text-black"
+          >
+            <ArrowLeft />
+          </button>
+
+          {/* IMAGE */}
+          <img
+            src={photos[active].src}
+            className="max-h-[80vh] max-w-full object-contain"
+          />
+
+          {/* RIGHT */}
+          <button
+            onClick={next}
+            className="absolute right-6 top-1/2 -translate-y-1/2 border p-3 rounded-full hover:bg-white hover:text-black"
+          >
+            <ArrowRight />
+          </button>
+
+        </div>
+      )}
+
+    </main>
+  );
+}
 export default function Home() {
   return (
     <main className="bg-black text-white">
