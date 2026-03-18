@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Play, X } from "lucide-react";
+
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -12,7 +12,11 @@ import {
   MapPin,
   ArrowUpRight,
   Disc3,
+  Menu,
+  Play,
+  X as CloseIcon,
 } from "lucide-react";
+
 const liveVideos = [
   {
     id: "01",
@@ -42,6 +46,7 @@ const liveVideos = [
     size: "lg:col-span-1",
   },
 ];
+
 const photos = [
   {
     src: "/press-kit/2025-12-29-22-31-08-761.jpg",
@@ -147,72 +152,218 @@ function SpotifyEmbedCard({
 }
 
 export default function Home() {
-    const showLiveSection = false; // 👈 toggle ici
-    const [activeVideo, setActiveVideo] = useState<null | {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const showLiveSection = false;
+
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [isHeaderCompact, setIsHeaderCompact] = useState(false);
+  const lastScrollY = useRef(0);
+
+  const [activeVideo, setActiveVideo] = useState<null | {
     title: string;
     videoSrc: string;
   }>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < 20) {
+        setIsHeaderVisible(true);
+        setIsHeaderCompact(false);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY > lastScrollY.current) {
+        // scroll down
+        setIsHeaderVisible(false);
+        setIsHeaderCompact(true);
+        setMenuOpen(false); // ferme le menu mobile quand on descend
+      } else {
+        // scroll up
+        setIsHeaderVisible(true); // <- c’était ici le bug
+        setIsHeaderCompact(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <main className="bg-[#050505] text-white selection:bg-[#B51F24] selection:text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-[78px] max-w-[1720px] items-center justify-between px-4 md:h-[88px] md:px-10">
-          <div className="flex min-w-0 items-center gap-3 md:gap-5">
-            <Link href="#home" className="shrink-0">
-              <div className="flex h-9 w-[110px] items-center overflow-hidden md:h-11 md:w-[140px]">
-                <img
-                  src="/press-kit/logo-slyd.png"
-                  alt="Sly'D logo"
-                  className="h-[175%] w-auto max-w-none shrink-0 object-contain object-left md:h-[185%]"
-                />
-              </div>
-            </Link>
-
-            <div className="hidden whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.34em] text-white/48 xl:block">
-              International DJ • Producer 
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 md:gap-8 xl:gap-10">
-            <nav className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.30em] text-white/78 lg:flex xl:gap-10">
-              <a href="#about" className="transition hover:text-white">
-                About
-              </a>
-              <a href="#clubs" className="transition hover:text-white">
-                Clubs
-              </a>
-              <a href="#sound" className="transition hover:text-white">
-                Sound
-              </a>
-      {showLiveSection && (
-  <a href="#live" className="transition hover:text-white">
-    Live
-  </a>
-)}
-              <a href="#gallery" className="transition hover:text-white">
-                Gallery
-              </a>
-              <a href="#spotify" className="transition hover:text-white">
-                Spotify
-              </a>
-              <a href="#contact" className="transition hover:text-white">
-                Contact
-              </a>
-            </nav>
-
-            <a
-              href="#contact"
-              className="rounded-full bg-[#D9252A] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-[#e32d32] md:px-7 md:py-3 md:text-xs md:tracking-[0.24em]"
-            >
-              Booking
-            </a>
-          </div>
+     <header
+  className={`fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-xl transition-transform duration-300 ${
+    isHeaderVisible ? "translate-y-0" : "-translate-y-full"
+  }`}
+>
+  <div
+    className={`mx-auto flex max-w-[1720px] items-center justify-between px-4 transition-all duration-300 md:px-10 ${
+      isHeaderCompact ? "h-[60px] md:h-[72px]" : "h-[72px] md:h-[88px]"
+    }`}
+  >
+    {/* LEFT */}
+    <div className="flex min-w-0 items-center gap-3 md:gap-5">
+      <Link href="#home" className="shrink-0">
+        <div
+          className={`flex items-center overflow-hidden transition-all duration-300 ${
+            isHeaderCompact
+              ? "h-8 w-[96px] md:h-9 md:w-[120px]"
+              : "h-9 w-[110px] md:h-11 md:w-[140px]"
+          }`}
+        >
+          <img
+            src="/press-kit/logo-slyd.png"
+            alt="Sly'D logo"
+            className="h-[175%] w-auto max-w-none shrink-0 object-contain object-left md:h-[185%]"
+          />
         </div>
-      </header>
+      </Link>
+
+      <div className="hidden whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.34em] text-white/48 xl:block">
+        DJ • Producer • International Energy
+      </div>
+    </div>
+
+    {/* RIGHT */}
+    <div className="flex items-center gap-3 md:gap-8 xl:gap-10">
+      {/* DESKTOP NAV */}
+      <nav className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.30em] text-white/78 lg:flex xl:gap-10">
+        <a href="#about" className="transition hover:text-white">
+          About
+        </a>
+        <a href="#clubs" className="transition hover:text-white">
+          Clubs
+        </a>
+        <a href="#sound" className="transition hover:text-white">
+          Sound
+        </a>
+        <a href="#gallery" className="transition hover:text-white">
+          Gallery
+        </a>
+        {showLiveSection && (
+          <a href="#live" className="transition hover:text-white">
+            Live
+          </a>
+        )}
+        <a href="#spotify" className="transition hover:text-white">
+          Spotify
+        </a>
+        <a href="#contact" className="transition hover:text-white">
+          Contact
+        </a>
+      </nav>
+
+      {/* MOBILE CTA */}
+      <a
+        href="#contact"
+        className={`inline-flex rounded-full bg-[#D9252A] font-semibold uppercase text-white transition-all duration-300 hover:bg-[#e32d32] lg:hidden ${
+          isHeaderCompact
+            ? "px-3 py-2 text-[9px] tracking-[0.16em]"
+            : "px-4 py-2.5 text-[10px] tracking-[0.2em]"
+        }`}
+      >
+        Booking
+      </a>
+
+      {/* DESKTOP CTA */}
+      <a
+        href="#contact"
+        className={`hidden rounded-full bg-[#D9252A] font-semibold uppercase text-white transition-all duration-300 hover:bg-[#e32d32] lg:inline-flex ${
+          isHeaderCompact
+            ? "px-5 py-2 text-[11px] tracking-[0.18em]"
+            : "px-7 py-3 text-xs tracking-[0.24em]"
+        }`}
+      >
+        Booking
+      </a>
+
+      {/* MOBILE BURGER */}
+      <button
+        type="button"
+        onClick={() => setMenuOpen((prev) => !prev)}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10 lg:hidden"
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+      >
+        {menuOpen ? (
+          <CloseIcon className="h-5 w-5 text-white" />
+        ) : (
+          <Menu className="h-5 w-5 text-white" />
+        )}
+      </button>
+    </div>
+  </div>
+
+  {/* MOBILE MENU */}
+  {menuOpen && (
+    <div className="absolute left-0 right-0 top-full z-[100] border-t border-white/10 bg-black lg:hidden">
+      <nav className="flex flex-col items-end gap-2.5 px-4 py-3 text-right">
+        <a
+          href="#about"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          About
+        </a>
+        <a
+          href="#clubs"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          Clubs
+        </a>
+        <a
+          href="#sound"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          Sound
+        </a>
+        <a
+          href="#gallery"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          Gallery
+        </a>
+        {showLiveSection && (
+          <a
+            href="#live"
+            onClick={() => setMenuOpen(false)}
+            className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+          >
+            Live
+          </a>
+        )}
+        <a
+          href="#spotify"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          Spotify
+        </a>
+        <a
+          href="#contact"
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-bold uppercase tracking-[0.05em] text-white transition hover:text-[#D9252A]"
+        >
+          Contact
+        </a>
+      </nav>
+    </div>
+  )}
+</header>
 
       {/* HERO */}
       <section
         id="home"
-        className="scroll-mt-24 relative isolate overflow-hidden pt-24 md:pt-32"
+  className="scroll-mt-24 pt-24 md:pt-32"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_15%,rgba(181,31,36,0.28),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(181,31,36,0.14),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(255,255,255,0.04),transparent_30%)]" />
         <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:34px_34px]" />
@@ -991,7 +1142,7 @@ export default function Home() {
         className="absolute -top-12 right-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-white/20"
         aria-label="Close video"
       >
-        <X className="h-5 w-5" />
+       <CloseIcon className="h-5 w-5 text-white" />
       </button>
 
       <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-black shadow-2xl shadow-black/50 md:rounded-[2rem]">
