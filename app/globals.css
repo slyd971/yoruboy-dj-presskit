@@ -25,6 +25,16 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
   line-height: 1.5;
+  font-family: var(--pk-font-body), sans-serif;
+}
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6 {
+  font-family: var(--pk-font-display), sans-serif;
 }
 
 a {
@@ -52,4 +62,21 @@ select {
 ::selection {
   background: #B51F24;
   color: white;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

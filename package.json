@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "create:client": "./scripts/create-client-press-kit.sh",
+    "create:press-kit": "./scripts/create-press-kit.sh",
+    "import:client-form": "python3 ./scripts/import-client-form.py",
+    "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 3002"
   },
   "dependencies": {
     "framer-motion": "^11.18.2",

@@ -5,3 +5,6 @@ node_modules
 .env.local
 .vercel
 .env*.local
+.pycache
+*.pyc
+tsconfig.tsbuildinfo
