@@ -328,6 +328,8 @@ export const pressKitConfig: PressKitConfig = {
       "Hip-Hop",
       "RnB",
       "Afro",
+      "Dancehall",
+      "Caribbean Music",
       "Baile Funk",
       "Future Beat",
       "UKG",
