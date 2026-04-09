@@ -1,6 +1,8 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const contentType = "image/png";
 export const size = {
   width: 1200,
@@ -8,7 +10,17 @@ export const size = {
 };
 export const alt = "Yoruboy Dj press kit preview";
 
-export default function OpenGraphImage() {
+async function getHeroDataUrl() {
+  const heroPath = path.join(process.cwd(), "public/yoruboy/hero.jpeg");
+  const heroBuffer = await readFile(heroPath);
+  const heroBase64 = heroBuffer.toString("base64");
+
+  return `data:image/jpeg;base64,${heroBase64}`;
+}
+
+export default async function OpenGraphImage() {
+  const heroDataUrl = await getHeroDataUrl();
+
   return new ImageResponse(
     (
       <div
@@ -19,7 +31,7 @@ export default function OpenGraphImage() {
           position: "relative",
           overflow: "hidden",
           background:
-            "linear-gradient(135deg, #120805 0%, #2c1208 35%, #5a250f 100%)",
+            "linear-gradient(135deg, #110804 0%, #2a140a 50%, #4f230f 100%)",
           color: "#fff7ed",
           fontFamily:
             "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -31,80 +43,53 @@ export default function OpenGraphImage() {
             inset: 0,
             display: "flex",
             background:
-              "radial-gradient(circle at 18% 20%, rgba(255,176,93,0.30), transparent 30%), radial-gradient(circle at 85% 22%, rgba(255,255,255,0.10), transparent 24%), radial-gradient(circle at 72% 85%, rgba(255,132,0,0.22), transparent 26%)",
+              "radial-gradient(circle at 16% 16%, rgba(255,179,102,0.22), transparent 26%), radial-gradient(circle at 84% 18%, rgba(255,255,255,0.10), transparent 22%), radial-gradient(circle at 74% 82%, rgba(255,123,0,0.22), transparent 28%)",
           }}
         />
 
         <div
           style={{
             position: "absolute",
-            right: -70,
-            top: -90,
-            width: 420,
-            height: 420,
-            borderRadius: 9999,
-            border: "1px solid rgba(255,255,255,0.16)",
-            opacity: 0.28,
-          }}
-        />
-
-        <div
-          style={{
-            position: "absolute",
-            right: 70,
-            top: 96,
-            width: 320,
-            height: 320,
-            borderRadius: 32,
-            background: "rgba(0,0,0,0.18)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+            right: 0,
+            top: 0,
+            width: 470,
+            height: 630,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            overflow: "hidden",
           }}
         >
+          <img
+            src={heroDataUrl}
+            alt="Yoruboy Dj hero"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "flex",
+              filter: "saturate(1.02) contrast(1.02)",
+            }}
+          />
           <div
             style={{
+              position: "absolute",
+              inset: 0,
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 12,
+              background:
+                "linear-gradient(90deg, rgba(17,8,4,0.94) 0%, rgba(17,8,4,0.40) 34%, rgba(17,8,4,0.20) 100%)",
             }}
-          >
-            <div
-              style={{
-                fontSize: 34,
-                letterSpacing: 8,
-                fontWeight: 800,
-                color: "#ffd3a6",
-              }}
-            >
-              YORUBOY
-            </div>
-            <div
-              style={{
-                fontSize: 18,
-                color: "rgba(255,247,237,0.84)",
-                letterSpacing: 2,
-                textTransform: "uppercase",
-              }}
-            >
-              Afrobeat • Amapiano • Hip-Hop • House
-            </div>
-          </div>
+          />
         </div>
 
         <div
           style={{
             position: "relative",
-            zIndex: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            padding: "58px 64px",
             width: "100%",
             height: "100%",
+            padding: "54px 58px",
           }}
         >
           <div
@@ -112,17 +97,17 @@ export default function OpenGraphImage() {
               display: "flex",
               alignItems: "center",
               gap: 14,
-              fontSize: 24,
-              color: "#ffd3a6",
-              textTransform: "uppercase",
+              color: "#ffd6b0",
+              fontSize: 22,
               letterSpacing: 3,
               fontWeight: 700,
+              textTransform: "uppercase",
             }}
           >
             <div
               style={{
-                width: 12,
-                height: 12,
+                width: 11,
+                height: 11,
                 borderRadius: 9999,
                 background: "#ff9f5a",
                 display: "flex",
@@ -135,18 +120,18 @@ export default function OpenGraphImage() {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 22,
-              maxWidth: 700,
+              gap: 20,
+              maxWidth: 690,
             }}
           >
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                fontSize: 90,
+                fontSize: 88,
                 lineHeight: 0.92,
-                fontWeight: 900,
                 letterSpacing: -3,
+                fontWeight: 900,
               }}
             >
               <span>YORUBOY</span>
@@ -156,13 +141,13 @@ export default function OpenGraphImage() {
             <div
               style={{
                 fontSize: 30,
-                lineHeight: 1.35,
-                color: "rgba(255,247,237,0.90)",
-                maxWidth: 680,
+                lineHeight: 1.34,
+                color: "rgba(255,247,237,0.92)",
+                maxWidth: 650,
               }}
             >
-              DJ open format base a Paris pour clubs, brand events et bookings
-              prives.
+              Afro, Amapiano, Hip-Hop et House pour clubs, marques et
+              evenements prives.
             </div>
           </div>
 
@@ -170,7 +155,7 @@ export default function OpenGraphImage() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 16,
+              gap: 18,
             }}
           >
             <div
@@ -178,22 +163,24 @@ export default function OpenGraphImage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "16px 26px",
+                padding: "16px 24px",
                 borderRadius: 9999,
                 background: "#ff8a3d",
                 color: "#1a0d06",
-                fontSize: 22,
+                fontSize: 21,
                 fontWeight: 800,
                 textTransform: "uppercase",
-                letterSpacing: 1.5,
+                letterSpacing: 1.3,
               }}
             >
               Booking Available
             </div>
+
             <div
               style={{
-                fontSize: 22,
-                color: "rgba(255,247,237,0.72)",
+                display: "flex",
+                fontSize: 21,
+                color: "rgba(255,247,237,0.74)",
               }}
             >
               yoruboy-dj.vercel.app
