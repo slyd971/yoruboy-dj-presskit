@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/yoruboy/hero.jpeg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Yoruboy Dj press kit preview",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: yoruboyPressKitConfig.metadata.title,
     description: yoruboyPressKitConfig.metadata.description,
-    images: ["/yoruboy/hero.jpeg"],
+    images: ["/opengraph-image"],
   },
 };
 

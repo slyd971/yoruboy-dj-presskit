@@ -6,9 +6,9 @@ const soundCloudEmbedUrl =
 
 export const yoruboyPressKitConfig: PressKitConfig = {
   metadata: {
-    title: "Yoruboy Dj Press Kit",
+    title: "Yoruboy Dj Press Kit | Afro, Amapiano, Hip-Hop & House",
     description:
-      "Press kit de Yoruboy Dj, DJ open format basé à Paris, disponible en France et à l'international.",
+      "Découvrez Yoruboy Dj, DJ open format basé à Paris, entre Afro, Amapiano, Hip-Hop et House, disponible pour clubs, marques et événements privés.",
   },
   ui: {
     openMenuLabel: "Ouvrir le menu",
