@@ -9,7 +9,7 @@ function rewriteToArtistPage(request: NextRequest, pathname: string, artist: str
   return NextResponse.rewrite(url);
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === "/slyd") {
